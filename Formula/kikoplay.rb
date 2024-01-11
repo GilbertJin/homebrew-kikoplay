@@ -3,15 +3,15 @@ class Kikoplay < Formula
   homepage "https://github.com/KikoPlayProject/KikoPlay"
   license "GPL-3.0"
 
-  stable do
-    url "https://github.com/KikoPlayProject/KikoPlay/archive/0.8.2.tar.gz"
-    sha256 "dc42b74eb616286910e028ceaa6753db803d553fc37347756df68f882d1f3d6a"
+  # stable do
+  #   url "https://github.com/KikoPlayProject/KikoPlay/archive/0.8.2.tar.gz"
+  #   sha256 "dc42b74eb616286910e028ceaa6753db803d553fc37347756df68f882d1f3d6a"
 
-    resource "script" do
-      url "https://github.com/KikoPlayProject/KikoPlayScript.git",
-          revision: "438248101f04b9fd0af29313c78b001a110cf219"
-    end
-  end
+  #   resource "script" do
+  #     url "https://github.com/KikoPlayProject/KikoPlayScript.git",
+  #         revision: "438248101f04b9fd0af29313c78b001a110cf219"
+  #   end
+  # end
 
   head do
     url "https://github.com/KikoPlayProject/KikoPlay.git"
@@ -21,11 +21,11 @@ class Kikoplay < Formula
     end
   end
 
-  bottle do
-    rebuild 1
-    root_url "https://github.com/KikoPlayProject/Homebrew-KikoPlay/releases/download/kikoplay-v0.8.2"
-    sha256 cellar: :any, high_sierra: "af8f77463ed27a7de937714087c26069e0fdab171d402bfdf82d2b8eb6a12c7a"
-  end
+  # bottle do
+  #   rebuild 1
+  #   root_url "https://github.com/KikoPlayProject/Homebrew-KikoPlay/releases/download/kikoplay-v0.8.2"
+  #   sha256 cellar: :any, high_sierra: "af8f77463ed27a7de937714087c26069e0fdab171d402bfdf82d2b8eb6a12c7a"
+  # end
 
   depends_on "aria2"
   depends_on "lua@5.3"
@@ -55,8 +55,8 @@ class Kikoplay < Formula
 
     # Use relative path ($prefix/bin/..) for instead of /usr
     inreplace %W[
-      LANServer/httpserver.cpp
-      Script/scriptmanager.cpp
+      LANServer/router.cpp
+      Extension/Script/scriptmanager.cpp
     ] do |s|
       s.gsub! '"/usr/share', 'QCoreApplication::applicationDirPath()+"/../Resources'
     end
@@ -99,7 +99,7 @@ class Kikoplay < Formula
     libs = %W[
       -L#{Formula["lua@5.3"].lib}
       -L#{Formula["mpv"].lib}
-      -L#{Formula["kikoplayproject/kikoplay/qhttpengine"].lib}
+      -L#{Formula["GilbertJin/kikoplay/qhttpengine"].lib}
     ]
     system "#{Formula["qt@5"].bin}/qmake",
            "LIBS += #{libs * " "}",
