@@ -100,7 +100,7 @@ class Kikoplay < Formula
             local_fix.tableRef = appList->dataRef;
             val = QVariant::fromValue<Extension::LuaItemRef>(local_fix);
       EOS
-      s.gsub! /(.*{ref, appCombo->dataRef}.*)/, "local_fix"
+      s.gsub! /(.*{getDataRef(L, appList), appList->dataRef}.*)/, "local_fix"
     end
     inreplace "Extension/App/AppWidgets/apptree.cpp" do |s|
       s.gsub! "const int ref = appTree->getDataRef(L, appTree);", <<~EOS
