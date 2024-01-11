@@ -84,6 +84,33 @@ class Kikoplay < Formula
       EOS
     end
 
+    # Fix the classical struct Extension::LuaItemRef usage.
+    inreplace "Extension/App/AppWidgets/appcombo.cpp" do |s|
+      s.gsub! /(.*const int ref = appCombo->getDataRef(L, appCombo);.*)/, <<~EOS
+        \\1 Extension::LuaItemRef local_fix;
+            local_fix.ref = ref;
+            local_fix.tableRef = appCombo->dataRef;
+      EOS
+      s.gsub! /(.*{ref, appCombo->dataRef}.*)/, "local_fix"
+    end
+    inreplace "Extension/App/AppWidgets/applist.cpp" do |s|
+      s.gsub! /(.*val = QVariant::fromValue<Extension::LuaItemRef>({getDataRef(L, appList), appList->dataRef});.*)/, <<~EOS
+            Extension::LuaItemRef local_fix;
+            local_fix.ref = getDataRef(L, appList);
+            local_fix.tableRef = appList->dataRef;
+            val = QVariant::fromValue<Extension::LuaItemRef>(local_fix);
+      EOS
+      s.gsub! /(.*{ref, appCombo->dataRef}.*)/, "local_fix"
+    end
+    inreplace "Extension/App/AppWidgets/apptree.cpp" do |s|
+      s.gsub! /(.*const int ref = appTree->getDataRef(L, appTree);.*)/, <<~EOS
+        \\1 Extension::LuaItemRef local_fix;
+            local_fix.ref = ref;
+            local_fix.tableRef = appTree->dataRef;
+      EOS
+      s.gsub! /(.*{ref, appTree->dataRef}.*)/, "local_fix"
+    end
+
     # Create icon
     mkdir "KikoPlay.iconset"
     system "sips", "-p", "128", "128",
