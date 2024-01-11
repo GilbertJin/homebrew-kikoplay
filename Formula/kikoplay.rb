@@ -103,10 +103,11 @@ class Kikoplay < Formula
     ]
     system "#{Formula["qt@5"].bin}/qmake",
            "LIBS += #{libs * " "}",
-           "ICON = KikoPlay.icns"
+           "ICON = KikoPlay.icns",
+           "build.pro"
 
     # Use packaged Lua headers
-    ln_sf Dir[Formula["lua@5.3"].opt_include/"lua/*"], "Script/lua/"
+    # ln_sf Dir[Formula["lua@5.3"].opt_include/"lua/*"], "Script/lua/"
 
     # Strip leading /usr during installation
     ln_s prefix, "usr"
