@@ -86,7 +86,7 @@ class Kikoplay < Formula
 
     # Fix the classical struct Extension::LuaItemRef usage.
     inreplace "Extension/App/AppWidgets/appcombo.cpp" do |s|
-      s.gsub! /(.*const int ref = appCombo->getDataRef(L, appCombo);.*)/, <<~EOS
+      s.gsub! "const int ref = appCombo->getDataRef(L, appCombo);", <<~EOS
         \\1 Extension::LuaItemRef local_fix;
             local_fix.ref = ref;
             local_fix.tableRef = appCombo->dataRef;
