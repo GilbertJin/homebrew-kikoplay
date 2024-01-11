@@ -30,28 +30,28 @@ class Kikoplay < Formula
   depends_on "aria2"
   depends_on "lua@5.3"
   depends_on "mpv"
-  depends_on "kikoplayproject/kikoplay/qhttpengine"
+  depends_on "gilbertjin/kikoplay/qhttpengine"
   depends_on "qt@5"
 
   def install
     # Enable test
-    # if build.head?
-    #   system "git", "fetch", "--tags"
-    #   version_str = Utils.safe_popen_read("git", "describe", "--tags")
-    #   inreplace "res/version.json", /(?<="Version":).*/, %Q("#{version_str}")
-    # end
+    if build.head?
+      system "git", "fetch", "--tags"
+      version_str = Utils.safe_popen_read("git", "describe", "--tags")
+      inreplace "newVersion/version.json", /(?<="Version":).*/, %Q("#{version_str}")
+    end
 
-    # inreplace "main.cpp", "args.pop_front();", <<~EOS
-    #   args.pop_front();
-    #   if(args.at(0) == "-V")
-    #   {
-    #     QFile version(":/res/version.json");
-    #     version.open(QIODevice::ReadOnly);
-    #     QJsonObject curVersionObj = QJsonDocument::fromJson(version.readAll()).object();
-    #     QTextStream(stderr) << qUtf8Printable(curVersionObj.value("Version").toString());
-    #     exit(0);
-    #   }
-    # EOS
+    inreplace "main.cpp", "args.pop_front();", <<~EOS
+      args.pop_front();
+      if(args.at(0) == "-V")
+      {
+        QFile version(":/res/version.json");
+        version.open(QIODevice::ReadOnly);
+        QJsonObject curVersionObj = QJsonDocument::fromJson(version.readAll()).object();
+        QTextStream(stderr) << qUtf8Printable(curVersionObj.value("Version").toString());
+        exit(0);
+      }
+    EOS
 
     # Use relative path ($prefix/bin/..) for instead of /usr
     inreplace %W[
@@ -86,12 +86,13 @@ class Kikoplay < Formula
 
     # Fix the classical struct Extension::LuaItemRef usage.
     inreplace "Extension/App/AppWidgets/appcombo.cpp" do |s|
-      s.gsub! "const int ref = appCombo->getDataRef(L, appCombo);", <<~EOS
-        \\1 Extension::LuaItemRef local_fix;
+      s.gsub! "const int ref = appCombo->getDataRef(L, appCombo)", <<~EOS
+            const int ref = appCombo->getDataRef(L, appCombo);
+            Extension::LuaItemRef local_fix;
             local_fix.ref = ref;
             local_fix.tableRef = appCombo->dataRef;
       EOS
-      s.gsub! /(.*{ref, appCombo->dataRef}.*)/, "local_fix"
+      s.gsub! "{ref, appCombo->dataRef}", "local_fix"
     end
     inreplace "Extension/App/AppWidgets/applist.cpp" do |s|
       s.gsub! "val = QVariant::fromValue<Extension::LuaItemRef>({getDataRef(L, appList), appList->dataRef});", <<~EOS
@@ -100,15 +101,27 @@ class Kikoplay < Formula
             local_fix.tableRef = appList->dataRef;
             val = QVariant::fromValue<Extension::LuaItemRef>(local_fix);
       EOS
-      s.gsub! "{getDataRef(L, appList), appList->dataRef}", "local_fix"
+      s.gsub! "map[\"data\"] = QVariant::fromValue<Extension::LuaItemRef>({ref, appList->dataRef});", <<~EOS
+            Extension::LuaItemRef local_fix;
+            local_fix.ref = ref;
+            local_fix.tableRef = appList->dataRef;
+            map["data"] = QVariant::fromValue<Extension::LuaItemRef>(local_fix);
+      EOS
     end
     inreplace "Extension/App/AppWidgets/apptree.cpp" do |s|
       s.gsub! "const int ref = appTree->getDataRef(L, appTree);", <<~EOS
-        \\1 Extension::LuaItemRef local_fix;
+            const int ref = appTree->getDataRef(L, appTree);
+            Extension::LuaItemRef local_fix;
             local_fix.ref = ref;
             local_fix.tableRef = appTree->dataRef;
       EOS
-      s.gsub! /(.*{ref, appTree->dataRef}.*)/, "local_fix"
+      s.gsub! "{ref, appTree->dataRef}", "local_fix"
+      s.gsub! "val = QVariant::fromValue<Extension::LuaItemRef>({appTree->getDataRef(L, appTree), appTree->dataRef});", <<~EOS
+            Extension::LuaItemRef local_fix;
+            local_fix.ref = appTree->getDataRef(L, appTree);
+            local_fix.tableRef = appTree->dataRef;
+            val = QVariant::fromValue<Extension::LuaItemRef>(local_fix);
+      EOS
     end
 
     # Create icon
@@ -139,11 +152,11 @@ class Kikoplay < Formula
     # Strip leading /usr during installation
     ln_s prefix, "usr"
     ENV["INSTALL_ROOT"] = "."
-    system "make", "install"
+    system "make"
 
     # Move app bundle and create command line shortcut
     mkdir "usr/libexec"
-    mv "usr/bin/KikoPlay.app", "usr/libexec"
+    mv "KikoPlay.app", "usr/libexec"
     bin.install_symlink libexec/"KikoPlay.app/Contents/MacOS/KikoPlay"
     (libexec/"KikoPlay.app/Contents/Resources").install_symlink share/"kikoplay"
 
