@@ -94,7 +94,7 @@ class Kikoplay < Formula
       s.gsub! /(.*{ref, appCombo->dataRef}.*)/, "local_fix"
     end
     inreplace "Extension/App/AppWidgets/applist.cpp" do |s|
-      s.gsub! /(.*val = QVariant::fromValue<Extension::LuaItemRef>({getDataRef(L, appList), appList->dataRef});.*)/, <<~EOS
+      s.gsub! "val = QVariant::fromValue<Extension::LuaItemRef>({getDataRef(L, appList), appList->dataRef});", <<~EOS
             Extension::LuaItemRef local_fix;
             local_fix.ref = getDataRef(L, appList);
             local_fix.tableRef = appList->dataRef;
@@ -103,7 +103,7 @@ class Kikoplay < Formula
       s.gsub! /(.*{ref, appCombo->dataRef}.*)/, "local_fix"
     end
     inreplace "Extension/App/AppWidgets/apptree.cpp" do |s|
-      s.gsub! /(.*const int ref = appTree->getDataRef(L, appTree);.*)/, <<~EOS
+      s.gsub! "const int ref = appTree->getDataRef(L, appTree);", <<~EOS
         \\1 Extension::LuaItemRef local_fix;
             local_fix.ref = ref;
             local_fix.tableRef = appTree->dataRef;
