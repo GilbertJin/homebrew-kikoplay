@@ -35,23 +35,23 @@ class Kikoplay < Formula
 
   def install
     # Enable test
-    if build.head?
-      system "git", "fetch", "--tags"
-      version_str = Utils.safe_popen_read("git", "describe", "--tags")
-      inreplace "res/version.json", /(?<="Version":).*/, %Q("#{version_str}")
-    end
+    # if build.head?
+    #   system "git", "fetch", "--tags"
+    #   version_str = Utils.safe_popen_read("git", "describe", "--tags")
+    #   inreplace "res/version.json", /(?<="Version":).*/, %Q("#{version_str}")
+    # end
 
-    inreplace "main.cpp", "args.pop_front();", <<~EOS
-      args.pop_front();
-      if(args.at(0) == "-V")
-      {
-        QFile version(":/res/version.json");
-        version.open(QIODevice::ReadOnly);
-        QJsonObject curVersionObj = QJsonDocument::fromJson(version.readAll()).object();
-        QTextStream(stderr) << qUtf8Printable(curVersionObj.value("Version").toString());
-        exit(0);
-      }
-    EOS
+    # inreplace "main.cpp", "args.pop_front();", <<~EOS
+    #   args.pop_front();
+    #   if(args.at(0) == "-V")
+    #   {
+    #     QFile version(":/res/version.json");
+    #     version.open(QIODevice::ReadOnly);
+    #     QJsonObject curVersionObj = QJsonDocument::fromJson(version.readAll()).object();
+    #     QTextStream(stderr) << qUtf8Printable(curVersionObj.value("Version").toString());
+    #     exit(0);
+    #   }
+    # EOS
 
     # Use relative path ($prefix/bin/..) for instead of /usr
     inreplace %W[
