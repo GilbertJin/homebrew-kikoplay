@@ -3,15 +3,15 @@ class Kikoplay < Formula
   homepage "https://github.com/KikoPlayProject/KikoPlay"
   license "GPL-3.0"
 
-  # stable do
-  #   url "https://github.com/KikoPlayProject/KikoPlay/archive/0.8.2.tar.gz"
-  #   sha256 "dc42b74eb616286910e028ceaa6753db803d553fc37347756df68f882d1f3d6a"
+  stable do
+    url "https://github.com/KikoPlayProject/KikoPlay/archive/1.0.1.tar.gz"
+    sha256 "da33b02f2b4264c3040feec8a24986f323174feac3505ec52e0a68e5c9ce7b76"
 
-  #   resource "script" do
-  #     url "https://github.com/KikoPlayProject/KikoPlayScript.git",
-  #         revision: "438248101f04b9fd0af29313c78b001a110cf219"
-  #   end
-  # end
+    resource "script" do
+      url "https://github.com/KikoPlayProject/KikoPlayScript.git",
+          revision: "4c552ec13e86a055e5d1d2ea4bfb7ed2b0e54a8f"
+    end
+  end
 
   head do
     url "https://github.com/KikoPlayProject/KikoPlay.git"
