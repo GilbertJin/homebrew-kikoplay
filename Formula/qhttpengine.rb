@@ -7,11 +7,11 @@ class Qhttpengine < Formula
   revision 1
   head "https://github.com/nitroshare/qhttpengine.git"
 
-  # bottle do
-  #   rebuild 1
-  #   root_url "https://github.com/KikoPlayProject/Homebrew-KikoPlay/releases/download/qhttpengine-v1.0.1"
-  #   sha256 cellar: :any, high_sierra: "df19a03f735553f1e6783dbee313c954b28b4bcf10dd9f6439531e826fd11656"
-  # end
+  bottle do
+    rebuild 1
+    root_url "https://github.com/GilbertJin/homebrew-kikoplay/releases/download/qhttpengine-v1.0.1"
+    sha256 cellar: :any, arm64_sonoma: "34400c064d1e06fd509f88c0734d7f178a632e4bcd8c060e8d02d8e99bbe527c"
+  end
 
   depends_on "cmake" => :build
   depends_on "qt@5"
