@@ -10,7 +10,7 @@ class Qhttpengine < Formula
   bottle do
     rebuild 1
     root_url "https://github.com/GilbertJin/homebrew-kikoplay/releases/download/qhttpengine-v1.0.1"
-    sha256 cellar: :any, arm64_sonoma: "34400c064d1e06fd509f88c0734d7f178a632e4bcd8c060e8d02d8e99bbe527c"
+    sha256 cellar: :any_skip_relocation, arm64_sonoma: "6477fc2b6624b0e578f9413eb201c0f3013ced683f05833877d9ce19565abcd7"
   end
 
   depends_on "cmake" => :build
