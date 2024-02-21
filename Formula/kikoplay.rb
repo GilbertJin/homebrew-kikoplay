@@ -23,14 +23,14 @@ class Kikoplay < Formula
 
   bottle do
     rebuild 1
-    root_url "https://github.com/GilbertJin/homebrew-kikoplay/releases/download/kikoplay-v1.0.1"
+    root_url "https://github.com/LucisUrbe/homebrew-kikoplay/releases/download/kikoplay-v1.0.1"
     sha256 cellar: :any, arm64_sonoma: "8acedee012a38fc2c264c3d8824412de5ba46b93dfa77d052bbb1732c6c7aa93"
   end
 
   depends_on "aria2"
   depends_on "lua@5.3"
   depends_on "mpv"
-  depends_on "gilbertjin/kikoplay/qhttpengine"
+  depends_on "LucisUrbe/kikoplay/qhttpengine"
   depends_on "qt@5"
 
   def install
@@ -139,7 +139,7 @@ class Kikoplay < Formula
     libs = %W[
       -L#{Formula["lua@5.3"].lib}
       -L#{Formula["mpv"].lib}
-      -L#{Formula["GilbertJin/kikoplay/qhttpengine"].lib}
+      -L#{Formula["LucisUrbe/kikoplay/qhttpengine"].lib}
     ]
     system "#{Formula["qt@5"].bin}/qmake",
            "LIBS += #{libs * " "}",
